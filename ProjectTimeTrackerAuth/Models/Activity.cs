@@ -24,7 +24,7 @@ namespace ProjectTimeTrackerAuth.Models
         [Display(Name = "Activity Type")]
         public int ActivityTypeID { get; set; }
 
-        [Required]
+        
         [Range(1, int.MaxValue, ErrorMessage = "You must select a valid Activity Type")]
         [Display(Name = "Activity Type")]
         public ActivityType ActivityTypes { get; set; }
