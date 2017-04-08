@@ -1,0 +1,81 @@
+@model ProjectTimeTrackerAuth.Models.TimeLog
+@{
+    ViewData["Title"] = "Track It!";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var currentActivity = "";
+    var currentActivityStart = "";
+    var activityCount = 0;
+
+
+    foreach (var element in ViewBag.ActivityID) {
+        activityCount++;
+        if (ViewBag.LastTimeLog != null) {
+            if (Int32.Parse(element.Value) == ViewBag.LastTimeLog.ActivityID) {
+                currentActivity = element.Text;
+                currentActivityStart = ViewBag.LastTimeLog.StartTime.ToString();
+                break;
+            }
+        }
+    }
+
+
+}
+
+<h2>Track It!</h2>
+@if (ViewBag.LastTimeLog != null) {
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="TimeLogID" value="@ViewBag.LastTimeLog.TimeLogID"/>
+        <input type="hidden" asp-for="Username" value="@ViewBag.LastTimeLog.Username" />
+        <input type="hidden" asp-for="StartTime" value="@ViewBag.LastTimeLog.StartTime" />
+        <input type="hidden" asp-for="ActivityID" value="@ViewBag.LastTimeLog.ActivityID" />
+        <div class="form-horizontal">
+            <div class="form-group">
+                <dl class="dl-horizontal col-md-6">
+                    <dt>Current Activity:</dt>
+                    <dd><span>@currentActivity</span><br /><span>Start Date/Time: @currentActivityStart</span></dd>
+                </dl>
+                <div class="col-md-2">
+                    <input type="submit" value="STOP!" class="btn btn-danger" />
+                </div>
+            </div>
+
+        </div>
+    </form>
+}
+@if (activityCount > 0) {
+    <form asp-action="Create">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <dl class="dl-horizontal col-md-6">
+                    <dt>
+                        <label asp-for="ActivityID" class="control-label text-right">Start:</label>
+                    </dt>
+                    <dd>
+                        <select asp-for="ActivityID" class="form-control" asp-items="ViewBag.ActivityID">
+                            <option value="0">-- Select Activity --</option>
+                        </select>
+                        <span asp-validation-for="ActivityID" class="text-danger"></span>
+                    </dd>
+                </dl>
+                <span asp-validation-for="ActivityID" class="text-danger"></span>
+                <div class="col-md-2">
+                    <input type="submit" value="GO!" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </form>
+} else {
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-offset-1">
+                <label class="control-label text-left">You can't track your time until Activity Types and Activities are set up.</label>
+            </div>
+            <div class="col-md-offset-1">
+                <a asp-controller="ActivityTypes" asp-action="Index">Go to Activity Types</a>
+                <br />
+                <a asp-controller="Activities" asp-action="Index">Go to Activities</a>
+            </div>
+        </div>
+    </div>
+}
